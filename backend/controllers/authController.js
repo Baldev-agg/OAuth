@@ -2,6 +2,15 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+exports.googleAuth = async (req, res) => {
+  try {
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.redirect(`http://localhost:5173/auth-callback?token=${token}&userId=${req.user._id}&name=${req.user.name}&email=${req.user.email}`);
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error', error: err.message });
+  }
+};
+
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
